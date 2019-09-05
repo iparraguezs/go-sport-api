@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>cl.go.sport</groupId>
-	<artifactId>go-sport-api-rest</artifactId>
+	<artifactId>go-sport-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>go-sport-api-rest</name>
-	<description>Demo project for Spring Boot</description>
+	<name>go-sport-api</name>
+	<description>Api for Go Sport</description>
 
 	<properties>
 		<java.version>1.8</java.version>

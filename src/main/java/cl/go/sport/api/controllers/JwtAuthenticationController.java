@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.go.sport.api.config.security.exceptions.JwtAuthenticationException;
+import cl.go.sport.api.config.security.request.JwtAuthenticationRequest;
+import cl.go.sport.api.config.security.response.JwtAuthenticationResponse;
 import cl.go.sport.api.controllers.dto.RoleDTO;
 import cl.go.sport.api.controllers.dto.UserDTO;
-import cl.go.sport.api.exceptions.JwtAuthenticationException;
 import cl.go.sport.api.persistence.model.User;
-import cl.go.sport.api.request.JwtAuthenticationRequest;
-import cl.go.sport.api.response.JwtAuthenticationResponse;
 import cl.go.sport.api.services.UserService;
 import cl.go.sport.api.services.results.ServiceResult;
 import cl.go.sport.api.utils.JwtTokenUtil;

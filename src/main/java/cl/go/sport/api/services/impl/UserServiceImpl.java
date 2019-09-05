@@ -10,10 +10,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cl.go.sport.api.config.security.GoSportUserDetails;
 import cl.go.sport.api.controllers.forms.UserForm;
 import cl.go.sport.api.persistence.model.User;
 import cl.go.sport.api.persistence.repositories.UserRepository;
-import cl.go.sport.api.security.UserDetailsImpl;
 import cl.go.sport.api.services.AbstractService;
 import cl.go.sport.api.services.UserService;
 import cl.go.sport.api.services.results.ServiceResult;
@@ -52,7 +52,7 @@ public class UserServiceImpl extends AbstractService implements UserDetailsServi
 		if (!optionalUser.isPresent()) {
 			throw new UsernameNotFoundException(String.format("No se encontró usuario para el username '%s'.", username));
 		} else {
-			return new UserDetailsImpl(optionalUser.get());
+			return new GoSportUserDetails(optionalUser.get());
 		}
 	}
 	

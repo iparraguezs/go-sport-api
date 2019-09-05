@@ -1,4 +1,4 @@
-package cl.go.sport.api.security;
+package cl.go.sport.api.config.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class CjmsMethodSecurityConfig extends GlobalMethodSecurityConfiguration {
+public class GoSportMethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 	@Override
 	protected MethodSecurityExpressionHandler createExpressionHandler() {
 		DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();

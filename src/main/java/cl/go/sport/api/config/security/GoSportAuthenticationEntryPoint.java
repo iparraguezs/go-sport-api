@@ -1,4 +1,4 @@
-package cl.go.sport.api.security;
+package cl.go.sport.api.config.security;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -11,7 +11,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CjmsAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
+public class GoSportAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
 
     private static final long serialVersionUID = -8970718410437077606L;
 

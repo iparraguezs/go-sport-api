@@ -1,4 +1,4 @@
-package cl.go.sport.api.security;
+package cl.go.sport.api.config.security;
 
 import java.util.Collection;
 
@@ -11,7 +11,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserDetailsImpl implements UserDetails {
+public class GoSportUserDetails implements UserDetails {
 	
 	private User user;
 

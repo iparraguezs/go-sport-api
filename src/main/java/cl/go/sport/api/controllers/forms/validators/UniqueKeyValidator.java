@@ -12,10 +12,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import cl.go.sport.api.config.security.GoSportUserDetails;
 import cl.go.sport.api.controllers.forms.validators.constraints.UniqueKey;
 import cl.go.sport.api.persistence.model.User;
 import cl.go.sport.api.persistence.repositories.UserRepository;
-import cl.go.sport.api.security.UserDetailsImpl;
 import cl.go.sport.api.utils.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,7 +58,7 @@ public class UniqueKeyValidator implements ConstraintValidator<UniqueKey, Object
 				if(containsUsername || containsEmail) {
 					Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	            	if(!Objects.isNull(authentication) && authentication.isAuthenticated()) {
-	            		User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
+	            		User user = ((GoSportUserDetails) authentication.getPrincipal()).getUser();
 						if(containsUsername) {
 	            			valid = user.getUsername().equals(fieldValue.toString());
 	            		} else  if(containsEmail) {

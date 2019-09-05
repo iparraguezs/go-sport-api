@@ -1,4 +1,4 @@
-package cl.go.sport.api.filter;
+package cl.go.sport.api.config.security.filter;
 
 import java.io.IOException;
 

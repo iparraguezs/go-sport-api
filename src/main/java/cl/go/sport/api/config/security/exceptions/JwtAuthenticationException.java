@@ -1,4 +1,4 @@
-package cl.go.sport.api.exceptions;
+package cl.go.sport.api.config.security.exceptions;
 
 public class JwtAuthenticationException extends RuntimeException {
 

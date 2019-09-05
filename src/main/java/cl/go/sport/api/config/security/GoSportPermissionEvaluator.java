@@ -1,4 +1,4 @@
-package cl.go.sport.api.security;
+package cl.go.sport.api.config.security;
 
 import java.io.Serializable;
 

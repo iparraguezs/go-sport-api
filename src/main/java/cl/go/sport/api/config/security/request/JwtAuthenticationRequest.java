@@ -1,4 +1,4 @@
-package cl.go.sport.api.request;
+package cl.go.sport.api.config.security.request;
 
 import java.io.Serializable;
 

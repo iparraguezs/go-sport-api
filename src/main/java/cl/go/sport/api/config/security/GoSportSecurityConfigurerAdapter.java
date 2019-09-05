@@ -1,4 +1,4 @@
-package cl.go.sport.api.security;
+package cl.go.sport.api.config.security;
 
 import java.util.List;
 
@@ -18,16 +18,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import cl.go.sport.api.filter.JwtAuthorizationTokenFilter;
+import cl.go.sport.api.config.security.filter.JwtAuthorizationTokenFilter;
 import cl.go.sport.api.services.UserService;
 import cl.go.sport.api.utils.JwtTokenUtil;
 
 @Configuration
 @EnableWebSecurity
-public class CjmsServiceSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+public class GoSportSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private CjmsAuthenticationEntryPoint unauthorizedHandler;
+	private GoSportAuthenticationEntryPoint unauthorizedHandler;
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;

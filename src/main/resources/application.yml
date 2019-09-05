@@ -1,0 +1,95 @@
+server:
+  port: ${PORT:8080}
+  servlet:
+    application-display-name: go-sport-api-rest
+  
+spring:
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:1MB}
+      max-request-size: ${MAX_REQUEST_SIZE:3MB}
+  mail:
+    default-encoding: ${MAIL_DEFAULT_ENCONDING:UTF-8}
+    host: ${MAIL_HOST} #smtp.gmail.com
+    username: ${MAIL_USERNAME} #gosportcl2019@gmail.com
+    password: ${MAIL_PASSWORD} #g0sp0rt!*
+    port: ${MAIL_PORT} #587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: ${MAIL_PROTOCOL} #smtp
+    test-connection: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  datasource:
+#    continue-on-error: true
+    url: ${DATASOURCE_URL} #jdbc:h2:~/database/go-sport
+    username: ${DATASOURCE_USERNAME} #sa
+    password: ${DATASOURCE_PASSWORD:}
+    driver-class-name: ${DATASOURCE_DRIVER} #org.h2.Driver
+    initialization-mode: ${DATASOURCE_INIT_MODE:EMBEDDED}
+  jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        hbm2ddl:
+          auto: ${HIBERNATE_HBM2DDL_AUTO:none}
+        show_sql: false
+        use_sql_comments: false
+        format_sql: false
+        dialect: ${HIBERNATE_DIALECT} #org.hibernate.dialect.H2Dialect
+    
+# Logging
+logging:
+  level:
+    org.springframework.web: INFO
+  file: logs/${server.servlet.application-display-name}.log
+
+ #JWT Security
+jwt:
+  header: Authorization
+  secret: SecretGoSportApi
+  expiration: 604800
+  route:
+    authentication:
+      path: /authentication
+      refresh: /refresh
+
+app:
+  enterprise:
+    name: Smartware Labs
+    url: http://www.smartware-labs.cl
+    version: v1.0
+  language:
+    supports: es,en
+    default: es
+    param-name: lang
+  http-security:
+    authorize-request: /,/status,/authentication,/refresh,/register,/forgot-password,/activate-account,/resend-activation-email,/change-password,/reset-password,/h2-console/**
+  route:
+    status: /status
+  api:
+    crud:
+      list: 
+      get: 
+      post: 
+      put: 
+      delete: 
+      search: /search
+      search-page: /search-page
+    user: /user
+  default:
+    upload:
+      base-path: upload
+      profile-photo: profile
+      team-photo: team
+      match-photo: match
+    new-pwd-expires-in: 90
+    pagination:
+      page-number: 1
+      page-size: 10
+      sorted-by: 
+        user: +username

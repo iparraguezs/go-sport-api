@@ -19,10 +19,10 @@ import cl.go.sport.api.controllers.forms.validators.UniqueKeyValidator;
 @Constraint(validatedBy = UniqueKeyValidator.class)
 @Documented
 public @interface UniqueKey {
-    String message() default "{constraints.unique}";
+    String message() default "";
     String column();
     Class<?> repository();
-    boolean required() default true;
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
+	boolean withAuthenticatedUser() default false;
 }

@@ -2,6 +2,7 @@ package cl.go.sport.api.controllers.forms;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -22,17 +23,19 @@ import lombok.experimental.SuperBuilder;
 public class UserForm extends EntityForm<User> {
 	private static final long serialVersionUID = -5731260521355518321L;
 
-	@Size(min = 4, max = 30)
-	@Pattern(regexp = "[a-zA-Z0-9]\\w+")
-	@UniqueKey(repository = UserRepository.class, column = "username")
+	@NotNull(message = "{userForm.username.notNull}")
+	@Size(min = 4, max = 30, message = "{userForm.username.size}")
+	@Pattern(regexp = "[a-zA-Z0-9]\\w+", message = "{userForm.username.pattern}")
+	@UniqueKey(repository = UserRepository.class, column = "username", message = "{userForm.username.uniqueKey}")
 	private String username;
 
-	@Size(min = 6, max = 15)
+	@NotNull(message = "{userForm.password.notNull}")
+	@Size(min = 6, max = 15, message = "{userForm.password.size}")
 	private String password;
 
-	@NotEmpty
-	@Email
-	@Size(max = 100)
-	@UniqueKey(repository = UserRepository.class, column = "email")
+	@NotNull(message = "{userForm.email.notNull}")
+	@Email(message = "{userForm.email.email}")
+	@Size(min = 4, max = 100, message = "{userForm.email.size}")
+	@UniqueKey(repository = UserRepository.class, column = "email", message = "{userForm.email.uniqueKey}")
 	private String email;
 }

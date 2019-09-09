@@ -1,5 +1,6 @@
 package cl.go.sport.api.controllers.forms;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import cl.go.sport.api.controllers.forms.validators.constraints.UniqueKey;
@@ -19,14 +20,16 @@ import lombok.experimental.SuperBuilder;
 public class RoleForm extends EntityForm<Role> {
 	private static final long serialVersionUID = -5731260521355518321L;
 
-	@Size(min = 4, max = 10)
-	@UniqueKey(repository = RoleRepository.class, column = "code")
+	@NotNull(message = "{roleForm.code.notNull}")
+	@Size(min = 4, max = 10, message = "{roleForm.code.size}")
+	@UniqueKey(repository = RoleRepository.class, column = "code", message = "{roleForm.code.uniqueKey}")
 	private String code;
 	
-	@Size(min = 5, max = 50)
-	@UniqueKey(repository = RoleRepository.class, column = "name")
+	@NotNull(message = "{roleForm.name.notNull}")
+	@Size(min = 5, max = 50, message = "{roleForm.name.size}")
+	@UniqueKey(repository = RoleRepository.class, column = "name", message = "{roleForm.name.uniqueKey}")
 	private String name;
 	
-	@Size(max = 500)
+	@Size(max = 500, message = "{roleForm.description.size}")
 	private String description;
 }

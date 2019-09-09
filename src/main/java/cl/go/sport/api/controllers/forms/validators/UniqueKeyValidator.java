@@ -23,17 +23,17 @@ import lombok.extern.slf4j.Slf4j;
 public class UniqueKeyValidator implements ConstraintValidator<UniqueKey, Object> {
 	String message;
     Class<?> repository;
-    boolean required;
     String column;
+    boolean withAuthenticatedUser;
     
     private final static String METHOD_PREFFIX = "existsBy";
     
     @Override
     public void initialize(final UniqueKey constraintAnnotation) { 
 		repository = constraintAnnotation.repository();
-        required = constraintAnnotation.required();
         message = constraintAnnotation.message();
         column = constraintAnnotation.column();
+        withAuthenticatedUser = constraintAnnotation.withAuthenticatedUser();
     }
     
 	@SuppressWarnings("unchecked")
@@ -41,34 +41,34 @@ public class UniqueKeyValidator implements ConstraintValidator<UniqueKey, Object
 	public boolean isValid(Object fieldValue, ConstraintValidatorContext context) {
 		boolean valid = true;
         try {
-            boolean requiredAndNotNull = required && fieldValue != null;
-            boolean notRequiredAndNotNull = !required && fieldValue != null;
-            boolean notRequiredAndNull = !required && fieldValue == null;
+
+        	if (Objects.isNull(fieldValue)) {
+				return true;
+			}
             
-            CrudRepository<?, Integer> repo = (CrudRepository<?, Integer>) BeanUtil.getBean(repository);
+            Method method = repository.getDeclaredMethod(StringUtils.join(METHOD_PREFFIX, StringUtils.capitalize(column)), fieldValue.getClass());;
+
+			CrudRepository<?, Integer> repo = (CrudRepository<?, Integer>) BeanUtil.getBean(repository);
             
-            Method method = repository.getDeclaredMethod(StringUtils.join(METHOD_PREFFIX, StringUtils.capitalize(column)), fieldValue.getClass());
+            valid = !(boolean) method.invoke(repo, fieldValue);
             
-            valid = notRequiredAndNull || ((requiredAndNotNull ||  notRequiredAndNotNull) && !(boolean) method.invoke(repo, fieldValue));
-            
-            if(!valid && repo instanceof UserRepository) {
-            	String methodNameLower = column.toLowerCase();
+            if (!valid && withAuthenticatedUser && repo instanceof UserRepository) {
+				String methodNameLower = column.toLowerCase();
 				boolean containsUsername = methodNameLower.contains("username".toLowerCase());
 				boolean containsEmail = methodNameLower.contains("email".toLowerCase());
-				if(containsUsername || containsEmail) {
+				if (containsUsername || containsEmail) {
 					Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	            	if(!Objects.isNull(authentication) && authentication.isAuthenticated()) {
-	            		User user = ((GoSportUserDetails) authentication.getPrincipal()).getUser();
-						if(containsUsername) {
-	            			valid = user.getUsername().equals(fieldValue.toString());
-	            		} else  if(containsEmail) {
+					if (!Objects.isNull(authentication) && authentication.isAuthenticated()) {
+						User user = ((GoSportUserDetails) authentication.getPrincipal()).getUser();
+						if (containsUsername) {
+							valid = user.getUsername().equals(fieldValue.toString());
+						} else if (containsEmail) {
 							valid = user.getEmail().equals(fieldValue.toString());
 						}
-	            	}
+					}
 				}
-            }
-            
-            if (!valid) {
+			}
+			if (!valid) {
                 context.disableDefaultConstraintViolation();
                 context.buildConstraintViolationWithTemplate(message)
                 	.addConstraintViolation();

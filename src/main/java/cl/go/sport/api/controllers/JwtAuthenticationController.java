@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -83,11 +84,6 @@ public class JwtAuthenticationController extends AbstractWebController {
 		}
 	}
 
-	@ExceptionHandler({ JwtAuthenticationException.class })
-	public ResponseEntity<String> handleAuthenticationException(JwtAuthenticationException e) {
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-	}
-
 	/**
 	 * Authenticates the user. If something is wrong, an
 	 * {@link JwtAuthenticationException} will be thrown
@@ -99,14 +95,27 @@ public class JwtAuthenticationController extends AbstractWebController {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		} catch (DisabledException e) {
-			throw new JwtAuthenticationException("UserForm is disabled!", e);
+			throw new JwtAuthenticationException(getMessage("jwtAuthenticationController.authenticate.disabled"), e);
 		} catch (BadCredentialsException e) {
-			throw new JwtAuthenticationException("Bad credentials!", e);
+			throw new JwtAuthenticationException(getMessage("jwtAuthenticationController.authenticate.badCredentials"), e);
+		} catch (CredentialsExpiredException e) {
+			throw new JwtAuthenticationException(getMessage("jwtAuthenticationController.authenticate.expiredCredentials"), e);
 		}
 	}
 
 	@GetMapping(path = "${app.route.status}")
 	public ResponseEntity<ResponseBase<String>> getStatus() {
 		return ResponseEntity.ok(createResponseBaseOk("Status OK!", getMessage("jwtAuthenticationController.getStatus.ok"), statusPath));
+	}
+	
+	@ExceptionHandler({ JwtAuthenticationException.class })
+	public ResponseEntity<ResponseBase<?>> handleAuthenticationException(JwtAuthenticationException e) {
+		return ResponseEntity
+			.status(HttpStatus.UNAUTHORIZED)
+			.body(createResponseBaseUnauthorizedThrowable(
+					e.getMessage()
+					, authenticationPath
+					, e.getCause()
+			));
 	}
 }

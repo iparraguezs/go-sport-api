@@ -1,5 +1,7 @@
 package cl.go.sport.api.controllers.forms.errors;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FormError {
 	private String field;
-	private String message;
+	private List<String> messages;
 }

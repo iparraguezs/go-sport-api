@@ -21,4 +21,5 @@ public class ResponseBase<T> {
 	private T result;
 	private Date date;
 	private String path;
+	private String throwable;
 }

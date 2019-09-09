@@ -1,7 +1,6 @@
 package cl.go.sport.api.controllers;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -31,30 +30,39 @@ public class AbstractWebController extends GoSportComponent {
 	protected String deletePath;
 
 	protected <T> ResponseBase<T> createResponseBaseOk(T result, String message, String subPath) {
-		return createResponseBase(result, HttpStatus.OK, message, null, null, subPath);
+		return createResponseBase(result, HttpStatus.OK, message, null, null, subPath, null);
 	}
 	
 	protected <T> ResponseBase<T> createResponseBaseCreated(T result, String message, String subPath) {
-		return createResponseBase(result, HttpStatus.CREATED, message, null, null, subPath);
+		return createResponseBase(result, HttpStatus.CREATED, message, null, null, subPath, null);
 	}
 	
 	protected <T> ResponseBase<T> createResponseBaseNoContent(T result, String message, String subPath) {
-		return createResponseBase(result, HttpStatus.NO_CONTENT, message, null, null, subPath);
+		return createResponseBase(result, HttpStatus.NO_CONTENT, message, null, null, subPath, null);
 	}
 	
 	protected <T> ResponseBase<T> createResponseBaseNotFound(String errorMessage, String subPath) {
-		return createResponseBase(null, HttpStatus.NOT_FOUND, null, errorMessage, null, subPath);
+		return createResponseBase(null, HttpStatus.NOT_FOUND, null, errorMessage, null, subPath, null);
 	}
 	
 	protected <T> ResponseBase<T> createResponseBaseBadRequest(T result, String errorMessage, String subPath) {
-		return createResponseBase(result, HttpStatus.BAD_REQUEST, null, errorMessage, null, subPath);
+		return createResponseBase(result, HttpStatus.BAD_REQUEST, null, errorMessage, null, subPath, null);
+	}
+	
+	protected <T> ResponseBase<T> createResponseBaseUnauthorized(String errorMessage, String subPath) {
+		return createResponseBase(null, HttpStatus.UNAUTHORIZED, null, errorMessage, null, subPath, null);
+	}
+	
+	protected <T> ResponseBase<T> createResponseBaseUnauthorizedThrowable(String errorMessage, String subPath, Throwable throwable) {
+		return createResponseBase(null, HttpStatus.UNAUTHORIZED, null, errorMessage, null, subPath, throwable);
 	}
 	
 	protected <T> ResponseBase<T> createResponseBaseBadRequest(T result, String errorMessage, List<FormError> formErrors, String subPath) {
-		return createResponseBase(result, HttpStatus.BAD_REQUEST, null, errorMessage, formErrors, subPath);
+		return createResponseBase(result, HttpStatus.BAD_REQUEST, null, errorMessage, formErrors, subPath, null);
 	}
 	
-	protected <T> ResponseBase<T> createResponseBase(T result, HttpStatus status, String message, String errorMessage, List<FormError> formErrors, String subPath) {
+	protected <T> ResponseBase<T> createResponseBase(T result, HttpStatus status, String message, String errorMessage
+			, List<FormError> formErrors, String subPath, Throwable throwable) {
 		return ResponseBase.<T>builder()
 				.result(result)
 				.status(status.value())
@@ -63,14 +71,11 @@ public class AbstractWebController extends GoSportComponent {
 				.formErrors(formErrors)
 				.path(contextPath.concat(subPath))
 				.date(DateUtils.today(DateUtils.DD_MM_YYYY_HH_MM_SS))
+				.throwable(throwable != null ? throwable.getClass().getSimpleName() : null)
 				.build();
 	}
 	
 	protected List<FormError> getErrors(BindingResult br) {
-		return br
-				.getAllErrors()
-				.stream()
-				.map(FormUtils::transform)
-				.collect(Collectors.toList());
+		return FormUtils.transform(br.getAllErrors());
 	}
 }

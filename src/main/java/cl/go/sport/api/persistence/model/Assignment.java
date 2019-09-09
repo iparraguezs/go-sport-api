@@ -6,24 +6,21 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Data
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=true)
 @Entity
 @Table(name = "assignment"
 	, uniqueConstraints = { @UniqueConstraint(columnNames = {"user_id", "role_id"})})
 public class Assignment extends EntityBase {
 	private static final long serialVersionUID = -2484249599382362060L;
 	
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "user_id", updatable = false, nullable = false)
 	private User user;

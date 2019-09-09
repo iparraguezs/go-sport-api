@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +19,19 @@ import cl.go.sport.api.persistence.repositories.UserRepository;
 import cl.go.sport.api.services.AbstractService;
 import cl.go.sport.api.services.UserService;
 import cl.go.sport.api.services.results.ServiceResult;
+import cl.go.sport.api.utils.DateUtils;
 
 @Service
 public class UserServiceImpl extends AbstractService implements UserDetailsService, UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Value("${app.default.new-pwd-expires-in}")
+	private Integer newPwdExpiresIn;
 		
 	@Override
 	@Transactional(readOnly = true)
@@ -71,21 +80,36 @@ public class UserServiceImpl extends AbstractService implements UserDetailsServi
 	@Override
 	@Transactional
 	public User save(UserForm form) {
-		// TODO Auto-generated method stub
-		return null;
+		User user = User.builder()
+				.email(form.getEmail())
+				.password(passwordEncoder.encode(form.getPassword()))
+				.passwordResetAt(DateUtils.addDays(newPwdExpiresIn))
+				.username(form.getUsername())
+				.build();
+		return userRepository.save(user);
 	}
 
 	@Override
 	@Transactional
 	public User save(User user, UserForm form) {
-		// TODO Auto-generated method stub
-		return null;
+		user.setEmail(form.getEmail());
+		user.setUsername(form.getUsername());
+		user = changePassword(user, form);
+		return userRepository.save(user);
 	}
 
 	@Override
 	@Transactional
 	public void delete(User user) {
-		// TODO Auto-generated method stub
-		
+		userRepository.delete(user);
+	}
+	
+	private User changePassword(User user, UserForm form) {
+		if(!passwordEncoder.matches(form.getPassword(), user.getPassword())) {
+			user.setLastPassword(user.getPassword());
+			user.setPasswordResetAt(DateUtils.addDays(newPwdExpiresIn));
+			user.setPassword(passwordEncoder.encode(form.getPassword()));
+		}
+		return user;
 	}
 }

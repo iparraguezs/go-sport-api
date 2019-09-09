@@ -1,8 +1,8 @@
 package cl.go.sport.api.persistence.model;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,15 +22,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cl.go.sport.api.utils.DateUtils;
 import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Data
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=true)
 @Entity
 @Table(name = "user")
 public class User extends EntityBase {
@@ -37,16 +39,15 @@ public class User extends EntityBase {
 	@Column(name = "username", length = 30, nullable = false, unique = true)
 	private String username;
 
-	@JsonIgnore
 	@Column(name = "password", length = 100, nullable = false)
 	private String password;
 
-	@JsonIgnore
 	@Column(name = "last_password", length = 100, nullable = true)
 	private String lastPassword;
 
+	@Temporal(TemporalType.DATE)
 	@Column(name = "password_reset_at")
-	private Timestamp passwordResetAt;
+	private Date passwordResetAt;
 
 	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;
@@ -55,9 +56,6 @@ public class User extends EntityBase {
 	@Builder.Default
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
 	private List<Assignment> assignments = new ArrayList<>();
-
-	/*@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-	private UserProfile userProfile;*/
 	
 	public boolean mustChangePassword() {
 		return this.passwordResetAt != null && DateUtils.beforeToday(this.passwordResetAt);

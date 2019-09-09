@@ -2,24 +2,23 @@ package cl.go.sport.api.persistence.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Data
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=true)
 @Entity
 @Table(name = "role")
 public class Role extends EntityBase {
@@ -35,7 +34,13 @@ public class Role extends EntityBase {
 	private String description;
 	
 	@Builder.Default
-	@JsonIgnore
 	@OneToMany(mappedBy = "role")
-	private List<Funcionality> functions = new ArrayList<>();
+	private List<Funcionality> functionalities = new ArrayList<>();
+	
+	public List<Function> getFunctions() {
+		return getFunctionalities()
+		.stream()
+		.map(f -> f.getFunction())
+		.collect(Collectors.toList());
+	}
 }

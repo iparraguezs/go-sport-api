@@ -1,20 +1,24 @@
 package cl.go.sport.api.controllers.responses;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
-import cl.go.sport.api.controllers.forms.errors.FormError;
-import cl.go.sport.api.utils.DateUtils;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-@Getter
-@Setter
+import cl.go.sport.api.controllers.forms.errors.FormError;
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+@JsonInclude(Include.NON_NULL)
 public class ResponseBase<T> {
 	private int status;
-	private String statusPhrase;
-	private String globalMessageError;
+	private String message;
+	private String errorMessage;
 	private List<FormError> formErrors;
 	private T result;
-	private Timestamp timestamp = DateUtils.toTimestamp(DateUtils.today());
+	private Date date;
+	private String path;
 }

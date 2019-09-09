@@ -26,55 +26,56 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Joiner;
 
-import cl.go.sport.api.controllers.dto.UserDTO;
-import cl.go.sport.api.controllers.forms.UserForm;
+import cl.go.sport.api.controllers.dto.RoleDTO;
+import cl.go.sport.api.controllers.forms.RoleForm;
 import cl.go.sport.api.controllers.responses.ResponseBase;
 import cl.go.sport.api.controllers.specifications.SearchOperation;
 import cl.go.sport.api.controllers.specifications.builder.UserSpecificationsBuilder;
+import cl.go.sport.api.persistence.model.Role;
 import cl.go.sport.api.persistence.model.User;
-import cl.go.sport.api.services.UserService;
-import cl.go.sport.api.utils.UserUtils;
+import cl.go.sport.api.services.RoleService;
+import cl.go.sport.api.utils.RoleUtils;
 
 @RestController
-@RequestMapping("${app.api.user}")
-public class UserController extends AbstractWebController implements CrudController<UserForm, UserDTO, User> {
+@RequestMapping("${app.api.role}")
+public class RoleController extends AbstractWebController implements CrudController<RoleForm, RoleDTO, Role> {
 	
-	@Value("${app.api.user}")
+	@Value("${app.api.role}")
 	private String controllerPath;
 	
 	@Autowired
-	private UserService userService;
-	
+	private RoleService roleService;
+
 	@Autowired
-	private UserUtils userUtils;
+	private RoleUtils roleUtils;
 	
 	@Override
 	@GetMapping("${app.api.crud.list}")
-	public ResponseEntity<ResponseBase<List<UserDTO>>> list(){
+	public ResponseEntity<ResponseBase<List<RoleDTO>>> list(){
 		return ResponseEntity.ok(createResponseBaseOk(
-				userService.list()
+				roleService.list()
 					.stream()
-					.map(user -> userUtils.forList(user))
+					.map(role -> roleUtils.forList(role))
 					.collect(Collectors.toList())
-				, getMessage("userController.list.ok")
+				, getMessage("roleController.list.ok")
 				, controllerPath.concat(listPath))
 		);
 	}
 	
 	@Override
 	@GetMapping("${app.api.crud.get}/{id}")
-	public ResponseEntity<ResponseBase<UserDTO>> get(@PathVariable("id") Integer id){
-		ResponseEntity<ResponseBase<UserDTO>> response = null;
-		User user = userService.findById(id);
-		if(user != null) {
+	public ResponseEntity<ResponseBase<RoleDTO>> get(@PathVariable("id") Integer id){
+		ResponseEntity<ResponseBase<RoleDTO>> response = null;
+		Role role = roleService.findById(id);
+		if(role != null) {
 			response = ResponseEntity.ok(createResponseBaseOk(
-					userUtils.full(user)
-					, getMessage("userController.get.ok")
+					roleUtils.full(role)
+					, getMessage("roleController.get.ok")
 					, controllerPath.concat(getPath))
 			);
 		} else {
 			response = new ResponseEntity<>(createResponseBaseNotFound(
-					getMessage("userController.get.notFound")
+					getMessage("roleController.get.notFound")
 					, controllerPath.concat(getPath))
 					, HttpStatus.NOT_FOUND);
 		}
@@ -83,19 +84,19 @@ public class UserController extends AbstractWebController implements CrudControl
 	
 	@Override
 	@PostMapping("${app.api.crud.post}")
-	public ResponseEntity<ResponseBase<UserDTO>> post(@Valid @RequestBody UserForm form, BindingResult br) {
-		ResponseEntity<ResponseBase<UserDTO>> response = null;
+	public ResponseEntity<ResponseBase<RoleDTO>> post(@Valid @RequestBody RoleForm form, BindingResult br) {
+		ResponseEntity<ResponseBase<RoleDTO>> response = null;
 		if (!br.hasErrors()) {
-			User user = userService.save(form);
+			Role role = roleService.save(form);
 			response = new ResponseEntity<>(createResponseBaseCreated(
-					userUtils.full(user)
-					, getMessage("userController.post.ok")
+					roleUtils.full(role)
+					, getMessage("roleController.post.ok")
 					, controllerPath.concat(postPath))
 					, HttpStatus.CREATED);
 		} else {
 			response = new ResponseEntity<>(createResponseBaseBadRequest(
 					null, 
-					getMessage("userController.post.formErrors")
+					getMessage("roleController.post.formErrors")
 					, getErrors(br)
 					, controllerPath.concat(postPath))
 					, HttpStatus.BAD_REQUEST);
@@ -105,21 +106,21 @@ public class UserController extends AbstractWebController implements CrudControl
 	
 	@Override
 	@PutMapping("${app.api.crud.put}/{id}")
-	public ResponseEntity<ResponseBase<UserDTO>> put(@PathVariable("id") Integer id, @Valid @RequestBody UserForm form, BindingResult br){
-		ResponseEntity<ResponseBase<UserDTO>> response = null;
+	public ResponseEntity<ResponseBase<RoleDTO>> put(@PathVariable("id") Integer id, @Valid @RequestBody RoleForm form, BindingResult br){
+		ResponseEntity<ResponseBase<RoleDTO>> response = null;
 		if (!br.hasErrors()) {
-			User user = userService.findById(id);
-			if (user != null) {
-				user = userService.save(user, form);
+			Role role = roleService.findById(id);
+			if (role != null) {
+				role = roleService.save(role, form);
 				response = new ResponseEntity<>(createResponseBaseNoContent(
-						userUtils.full(user)
-						, getMessage("userController.put.ok")
+						roleUtils.full(role)
+						, getMessage("roleController.put.ok")
 						, controllerPath.concat(putPath))
 						, HttpStatus.NO_CONTENT);
 			} else {
-				user = userService.save(form);
+				role = roleService.save(form);
 				response = new ResponseEntity<>(createResponseBaseCreated(
-						userUtils.full(user)
+						roleUtils.full(role)
 						, getMessage("userController.put.created")
 						, controllerPath.concat(postPath))
 						, HttpStatus.CREATED);
@@ -132,16 +133,16 @@ public class UserController extends AbstractWebController implements CrudControl
 	@DeleteMapping("${app.api.crud.delete}/{id}")
 	public ResponseEntity<ResponseBase<?>> delete(@PathVariable("id") Integer id) {
 		ResponseEntity<ResponseBase<?>> response = null;
-		User user = userService.findById(id);
-		if(user != null) {
-			userService.delete(user);
+		Role role = roleService.findById(id);
+		if(role != null) {
+			roleService.delete(role);
 			response = ResponseEntity.ok(createResponseBaseOk(
-					userUtils.full(user)
+					roleUtils.full(role)
 					, getMessage("userController.delete.ok")
 					, controllerPath.concat(deletePath)));
 		} else {
 			response = new ResponseEntity<>(createResponseBaseNotFound(
-					getMessage("userController.delete.notFound")
+					getMessage("roleController.delete.notFound")
 					, controllerPath.concat(deletePath))
 					, HttpStatus.NOT_FOUND);
 		}
@@ -150,7 +151,7 @@ public class UserController extends AbstractWebController implements CrudControl
 
 	@Override
 	@GetMapping("${app.api.crud.search}")
-	public ResponseEntity<ResponseBase<List<UserDTO>>> search(@RequestParam String s) {
+	public ResponseEntity<ResponseBase<List<RoleDTO>>> search(@RequestParam String s) {
 		UserSpecificationsBuilder builder = new UserSpecificationsBuilder();
 		String operationSetExper = Joiner.on("|").join(SearchOperation.SIMPLE_OPERATION_SET);
 		Pattern pattern = Pattern.compile("(\\w+?)(" + operationSetExper + ")(\\p{Punct}?)(\\w+?)(\\p{Punct}?),");
@@ -170,7 +171,7 @@ public class UserController extends AbstractWebController implements CrudControl
 
 	@Override
 	@GetMapping("${app.api.crud.search-page}")
-	public ResponseEntity<ResponseBase<Page<UserDTO>>> searchPage(@RequestParam String s
+	public ResponseEntity<ResponseBase<Page<RoleDTO>>> searchPage(@RequestParam String s
 			, @RequestParam(required = false) Integer pageNumber
 			, @RequestParam(required = false) Integer pageSize
 			, @RequestParam(required = false) String sortingCriteria) {

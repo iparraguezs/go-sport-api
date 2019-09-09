@@ -8,18 +8,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import cl.go.sport.api.utils.DateUtils;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Data
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
 @MappedSuperclass
@@ -30,26 +32,31 @@ public abstract class EntityBase implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", updatable = false, nullable = false)
-	@JsonIgnore
 	private Integer id;
 
 	@Column(name = "created_at", updatable = false, nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
 	@CreationTimestamp
 	private Date createdAt;
 
 	@Column(name = "updated_at", nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
 	@UpdateTimestamp
 	private Date updatedAt;
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "enabled_at")
 	private Date enabledAt;
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "disabled_at")
 	private Date disabledAt;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "expired_at")
 	private Date expiredAt;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "locked_at")
 	private Date lockedAt;
 

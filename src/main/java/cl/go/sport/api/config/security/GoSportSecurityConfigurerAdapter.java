@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -88,7 +89,7 @@ public class GoSportSecurityConfigurerAdapter extends WebSecurityConfigurerAdapt
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		// AuthenticationTokenFilter will ignore the below paths
-		web.ignoring()
-				.antMatchers(authorizeRequest.stream().toArray(String[]::new));
+		web.ignoring().mvcMatchers(HttpMethod.OPTIONS, "/**");
+        web.ignoring().mvcMatchers("/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs","/webjars/**");
 	}
 }
